@@ -1,0 +1,53 @@
+# QMK Userspace with Oryx
+My personal QMK External Userspace for my ZSA keyboards. Set up to let me
+configure keymaps primarily through [Oryx Configurator](https://www.zsa.io/oryx)
+and easily merge this with custom QMK code for functionality that that cannot
+be configured through Oryx.
+
+I strongly prefer using Oryx, as it is very easy and convenient to edit keymaps
+with and can configure the majority of the (non-trivial to write) functionality
+I want. However, there were some specific things I wanted that were beyond the
+scope of Oryx. As such, I made this repo to be able to properly maintain this
+custom functionality while continuing to use Oryx.
+
+## Setup
+1. Clone this repo.
+1. Run `git submodule update --init --recursive` to pull down a local copy of
+   ZSA's QMK fork and its dependencies into `./zsa_firmware`.
+1. (Optional) Set `user.keyboard` and `user.keymap` in your qmk config file 
+   to provide defaults for `-kb` and `-km` flags respectively.
+
+## Maintaining and configuring layouts
+This repo relies on three-way merging to be able to use Oryx alongside custom QMK
+code.
+
+1. Use the `oryx` branch for tracking and versioning the source code of keymap
+   revisions as obtained directly from Oryx, and use it for only that: **don't put
+   custom QMK code on the `oryx` branch!**.
+1. Use the `main` branch to add custom QMK code on top of the source code generated
+   by Oryx. Merge in the `oryx` branch whenever you've added/updated a keymap
+   revision on it, so that the `main` branch will be up-to-date with changes you
+   made to Oryx while maintaining any custom functionality. *To avoid merge
+   conflicts, prefer keeping custom code on its own lines and keeping those lines
+   bunched together as much as possible.*
+
+### Automation
+Run `./fetch_and_merge_oryx.sh <board> <layout> <revisionId>` to fetch for the
+specified board and layout the given revision from Oryx (note that the layout
+must be public in Oryx), commit this to the `oryx` branch, then merge this into
+the `main` branch. Using `latest` for revision gets the most recent revision
+from Oryx. You need some dependencies to run this script, you can see which in
+the nix shell declaration.
+*Note that you should manually add a new layout to this script to support a new
+one, but this is trivial to do.*
+
+## Compiling and flashing
+1. Set `QMK_USERSPACE` to this repository and `"QMK_HOME=$QMK_USERSPACE/zsa_firmware"`
+   and export these; the nix shell will do this automatically. Alternatively, in
+   your qmk config, set `user.qmk_home` and `user.overlay_dir` to these paths
+   respectively; *if these are set they **will supersede** the environment variables*.
+1. You can now run `qmk compile` with `-km` set to one of the custom keymaps in
+   this repository and `-kb` set to one of the keyboards in the `zsa_firmware`
+   submodule to compile a custom keymap for a ZSA board. (you can also still use
+   one of the keymaps for that board in `zsa_firmware`).
+1. Run `qmk flash` with the same flag values to flash the board with the new keymap.
