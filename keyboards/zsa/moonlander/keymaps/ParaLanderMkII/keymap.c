@@ -26,6 +26,30 @@ enum tap_dance_codes {
 };
 
 
+//===CUSTOM CODE START==========================================================
+uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        // Disable Quick Tap for SPACE-SHIFT: SHIFT is commonly held
+        // after SPACE while SPACE spam is rare in normal usage.
+        case MT(MOD_LSFT, KC_SPACE):
+            return 0;
+        default:
+            return QUICK_TAP_TERM;
+    }
+}
+
+bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        // Immediate hold action on Nav layer, for quick navigation and instant OSM mods
+        case LT(4, KC_BSPC):
+            return true;
+        default:
+            // Do not select the hold action when another key is pressed.
+            return false;
+    }
+}
+//===CUSTOM CODE END============================================================
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_moonlander(
     KC_ESCAPE,      KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           KC_TRANSPARENT, 
