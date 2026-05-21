@@ -28,6 +28,24 @@ enum tap_dance_codes {
 #define DUAL_FUNC_0 LT(1, KC_W)
 
 //===CUSTOM CODE START==========================================================
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        // Makes it easier to rapidly hit multiple OSM's without accidentally losing
+        // them to a "hold".
+        case OSM(MOD_LSFT):
+        case OSM(MOD_RSFT):
+        case OSM(MOD_LCTL):
+        case OSM(MOD_RCTL):
+        case OSM(MOD_LGUI):
+        case OSM(MOD_RGUI):
+        case OSM(MOD_LALT):
+        case OSM(MOD_RALT):
+            return TAPPING_TERM + 2000;
+        default:
+            return TAPPING_TERM;
+    }
+}
+
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         // Disable Quick Tap for SPACE-SHIFT: SHIFT is commonly held
