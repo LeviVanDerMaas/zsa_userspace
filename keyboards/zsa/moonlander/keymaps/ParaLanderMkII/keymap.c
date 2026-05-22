@@ -30,17 +30,12 @@ enum tap_dance_codes {
 //===CUSTOM CODE START==========================================================
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        // Makes it easier to rapidly hit multiple OSM's without accidentally losing
-        // them to a "hold".
-        case OSM(MOD_LSFT):
-        case OSM(MOD_RSFT):
-        case OSM(MOD_LCTL):
-        case OSM(MOD_RCTL):
-        case OSM(MOD_LGUI):
-        case OSM(MOD_RGUI):
-        case OSM(MOD_LALT):
-        case OSM(MOD_RALT):
-            return TAPPING_TERM + 2000;
+        // Makes it easier to rapidly hit multiple OSM's without accidentally
+        // losing them to a "hold", the idea being that I would only really choose
+        // to "hold" an OSM if I actually intended to hold it for a prolonged time
+        // (cuz otherwise I would just tap it)
+        case QK_ONE_SHOT_MOD ... QK_ONE_SHOT_MOD_MAX:
+            return TAPPING_TERM + 100;
         default:
             return TAPPING_TERM;
     }
@@ -54,6 +49,21 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
             return 0;
         default:
             return QUICK_TAP_TERM;
+    }
+}
+
+bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        // Free OSM keys from permissive hold. This is mainly to prevent the scenario
+        // where you: press OSM1; press-release OSM2; release OSM1; all within
+        // the tapping term of OSM1; thus OSM1 gets turned into a tap and "lost".
+        // The loss of permissve-hold on non-OSM keys shouldn't be such a big deal since
+        // you'll usually be either only tapping these keys or deliberately hold them for
+        // prolonged use. 
+        case QK_ONE_SHOT_MOD ... QK_ONE_SHOT_MOD_MAX:
+            return false;
+        default:
+            return true;
     }
 }
 
