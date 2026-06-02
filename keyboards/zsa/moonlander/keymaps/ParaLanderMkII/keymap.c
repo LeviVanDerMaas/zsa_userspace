@@ -41,7 +41,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         // to "hold" an OSM if I actually intended to hold it for a prolonged time
         // (cuz otherwise I would just tap it)
         case QK_ONE_SHOT_MOD ... QK_ONE_SHOT_MOD_MAX:
-            return TAPPING_TERM + 100;
+            return TAPPING_TERM + 150;
         default:
             return TAPPING_TERM;
     }
