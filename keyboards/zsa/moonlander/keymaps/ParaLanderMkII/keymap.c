@@ -79,6 +79,10 @@ bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
             return false;
     }
 }
+
+// Mark this as custom via a macro helps to keep track of it during merges.
+#define CUSTOM_LSFT_T_COLN LSFT_T(KC_COLN)
+
 //===CUSTOM CODE END============================================================
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -86,7 +90,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESCAPE,      KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           KC_TRANSPARENT, 
     KC_LEFT_ALT,    KC_Q,           KC_W,           KC_E,           KC_R,           KC_T,           KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_Y,           KC_U,           KC_I,           KC_O,           KC_P,           KC_GRAVE,       
     MT(MOD_LCTL, KC_ESCAPE),KC_A,           KC_S,           KC_D,           KC_F,           KC_G,           KC_TRANSPARENT,                                                                 KC_TRANSPARENT, KC_H,           KC_J,           KC_K,           KC_L,           KC_SCLN,        KC_QUOTE,       
-    KC_COLN,        KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,                                           KC_N,           KC_M,           KC_COMMA,       KC_DOT,         KC_SLASH,       KC_BSLS,        
+    CUSTOM_LSFT_T_COLN,     KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,                                           KC_N,           KC_M,           KC_COMMA,       KC_DOT,         KC_SLASH,       KC_BSLS,        
     KC_TRANSPARENT, KC_TRANSPARENT, KC_PSCR,        LT(6, KC_MEDIA_PLAY_PAUSE),MT(MOD_LGUI, KC_DELETE),TG(1),                                                                                                          KC_RIGHT_GUI,   MO(2),          KC_LEFT,        KC_DOWN,        KC_UP,          KC_RIGHT,       
     LT(4, KC_BSPC), LT(3, KC_TAB),  LT(5, KC_CAPS),                 KC_RIGHT_ALT,   LT(3, KC_ENTER),MT(MOD_LSFT, KC_SPACE)
   ),
@@ -577,6 +581,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             rgblight_mode(1);
         }
         return false;
+
+
+    //===CUSTOM CODE START======================================================
+    case CUSTOM_LSFT_T_COLN:
+      // Send a colon if this was a tap, then no further processing,
+      // if hold leave it to standard QMK processing to make it become an LSHIFT
+      if (record->tap.count && record->event.pressed) {
+        tap_code16(KC_COLN);
+        return false;
+      }
+      break;
+    //===CUSTOM CODE END========================================================
   }
   return true;
 }
