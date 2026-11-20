@@ -7,7 +7,7 @@
 #define COMBO_TERM 100
 
 #define USB_SUSPEND_WAKEUP_DELAY 0
-#define SERIAL_NUMBER "QJ5Wg/Xbp739"
+#define SERIAL_NUMBER "QJ5Wg/yopogP"
 #define LAYER_STATE_8BIT
 #define COMBO_COUNT 4
 
