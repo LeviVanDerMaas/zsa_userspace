@@ -45,8 +45,9 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        // Disable Quick Tap for SPACE-SHIFT: SHIFT is commonly held
-        // after SPACE while SPACE spam is rare in normal usage.
+        // Disable Quick Tap for SPACE-SHIFT: LSHIFT is commonly held after
+        // SPACE while SPACE spam is rare in normal usage. Do not apply to
+        // RSHIFT as an escape-hatch for a dual shift-space on different layers
         case MT(MOD_LSFT, KC_SPACE):
             return 0;
         default:
